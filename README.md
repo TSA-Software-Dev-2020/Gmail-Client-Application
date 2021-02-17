@@ -1,0 +1,18 @@
+# Gmail-Client-App
+
+clone 
+
+```bash
+git clone https://github.com/TSA-Software-Dev-2020/Gmail-Client-App.git
+```
+
+commit to new-commits
+
+```bash
+git init
+&& git add .
+&& git commit -m "random stuff"
+&& git push origin new-commits
+```
+
+and then pr merge to main

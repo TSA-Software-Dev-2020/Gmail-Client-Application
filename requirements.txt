@@ -1,0 +1,13 @@
+Fabric
+Flask-SQLAlchemy
+Flask-WTF
+WTForms
+coverage
+google-api-python-client
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+requests
+# ecdsa
+# paramiko
+# pycrypto
