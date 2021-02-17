@@ -12,7 +12,8 @@ commit to new-commits
 git init
 && git add .
 && git commit -m "random stuff"
-&& git push origin new-commits
+&& git checkout dev
+&& git push -u origin dev
 ```
 
 and then pr merge to main
