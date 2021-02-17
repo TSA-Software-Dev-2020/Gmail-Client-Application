@@ -30,7 +30,7 @@ import jinja2
 
 
 #----------------------------------------------------------------------------#
-# App Config.
+# App Config
 #----------------------------------------------------------------------------#
 
 app = Flask(__name__)
@@ -43,11 +43,6 @@ temp_loader = jinja2.ChoiceLoader([
     ])
 app.jinja_loader = temp_loader
 
-<<<<<<< HEAD
-app.register_blueprint(bp)
-
-=======
->>>>>>> 8210f62... changes
 # Automatically tear down SQLAlchemy.
 '''
 @app.teardown_request
