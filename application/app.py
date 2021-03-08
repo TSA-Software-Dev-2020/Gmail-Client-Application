@@ -18,7 +18,6 @@ import os
 import werkzeug
 import jinja2
 from .views import bp
-=======
 from flask import Flask, render_template, request
 # from flask.ext.sqlalchemy import SQLAlchemy
 import logging
