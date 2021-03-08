@@ -12,6 +12,7 @@ commit to new-commits
 git init
 && git add .
 && git commit -m "random stuff"
+&& git add remote origin https://github.com/TSA-Software-Dev-2020/Gmail-Client-Application.git
 && git checkout dev
 && git push -u origin dev
 ```
