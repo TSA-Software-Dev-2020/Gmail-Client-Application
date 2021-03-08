@@ -66,7 +66,6 @@ def login_required(test):
 #----------------------------------------------------------------------------#
 
 
-<<<<<<< HEAD
 # @app.route('/')
 # def home():
 #     return render_template('pages/index.html')
@@ -97,7 +96,7 @@ def login_required(test):
 # def static_files_css(filename):
 #     return send_from_directory(app.static_folder, filename=filename)
 
-=======
+
 @app.route('/')
 def home():
     return render_template('pages/index.html')
@@ -124,12 +123,12 @@ def register():
 def forgot():
     form = ForgotForm(request.form)
     return render_template('forms/forgot.html', form=form)
->>>>>>> 8210f62... changes
+
 
 # Error handlers.
 
 
-<<<<<<< HEAD
+
 # @app.errorhandler(werkzeug.exceptions.InternalServerError)
 # def internal_error(error):
 #     #db_session.rollback()
@@ -149,7 +148,7 @@ def forgot():
 #     file_handler.setLevel(logging.INFO)
 #     app.logger.addHandler(file_handler)
 #     app.logger.info('errors')
-=======
+
 @app.errorhandler(werkzeug.exceptions.InternalServerError)
 def internal_error(error):
     #db_session.rollback()
@@ -169,7 +168,7 @@ if not app.debug:
     file_handler.setLevel(logging.INFO)
     app.logger.addHandler(file_handler)
     app.logger.info('errors')
->>>>>>> 8210f62... changes
+
 
 #----------------------------------------------------------------------------#
 # Launch.
