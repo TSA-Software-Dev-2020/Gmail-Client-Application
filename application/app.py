@@ -74,7 +74,6 @@ def login_required(test):
 # def about():
 #     return render_template('pages/placeholder.about.html')
 
-
 # @app.route('/login')
 # def login():
 #     form = LoginForm(request.form)
