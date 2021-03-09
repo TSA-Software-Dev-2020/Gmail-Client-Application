@@ -10,7 +10,7 @@ import os
 from .utils import gmail_api
 
 
-bp = Blueprint("bp1", __name__)
+bp = Blueprint("bp", __name__)
 
 
 

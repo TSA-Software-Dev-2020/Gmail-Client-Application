@@ -27,6 +27,7 @@ import os
 from pathlib import Path
 import werkzeug
 import jinja2
+from .views import bp
 
 
 #----------------------------------------------------------------------------#
@@ -34,6 +35,7 @@ import jinja2
 #----------------------------------------------------------------------------#
 
 app = Flask(__name__, static_url_path="/static", static_folder=str(Path(__file__).parent.parent)+"/static")
+app.register_blueprint(bp)
 app.config.from_object('application.config_dev')
 #db = SQLAlchemy(app)
 
@@ -99,32 +101,32 @@ def login_required(test):
 #     return send_from_directory(str(ROOT_DIR+".static"), filename=filename)
 
 
-@app.route('/')
-def home():
-    return render_template('pages/index.html')
+# @app.route('/')
+# def home():
+#     return render_template('pages/index.html')
 
 
-@app.route('/about')
-def about():
-    return render_template('pages/placeholder.about.html')
+# @app.route('/about')
+# def about():
+#     return render_template('pages/placeholder.about.html')
 
 
-@app.route('/login')
-def login():
-    form = LoginForm(request.form)
-    return render_template('forms/login.html', form=form)
+# @app.route('/login')
+# def login():
+#     form = LoginForm(request.form)
+#     return render_template('forms/login.html', form=form)
 
 
-@app.route('/register')
-def register():
-    form = RegisterForm(request.form)
-    return render_template('forms/register.html', form=form)
+# @app.route('/register')
+# def register():
+#     form = RegisterForm(request.form)
+#     return render_template('forms/register.html', form=form)
 
 
-@app.route('/forgot')
-def forgot():
-    form = ForgotForm(request.form)
-    return render_template('forms/forgot.html', form=form)
+# @app.route('/forgot')
+# def forgot():
+#     form = ForgotForm(request.form)
+#     return render_template('forms/forgot.html', form=form)
 
 
 # Error handlers.
