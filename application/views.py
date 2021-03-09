@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, render_template, request, send_from_directory, redirect
+from flask import Flask, Blueprint, render_template, request, send_from_directory, redirect, session
 # from flask.ext.sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
@@ -31,19 +31,34 @@ def login_required(test):
 
 @bp.route('/')
 def home():
+    session["previous"] = "/"
     return render_template('pages/index.html')
 
 @bp.route('/about')
 def about():
+    session["previous"] = "/about"
     return render_template('pages/placeholder.about.html')
 
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
+    session["previous"] = "/login"
     if request.method == 'POST':
         return redirect(gmail_api.Auth().authorization_url)
     form = LoginForm(request.form)
     return render_template('forms/login.html', form=form)
+
+# @bp.route('/register')
+# def register():
+#     form = RegisterForm(request.form)
+#     return render_template('forms/register.html', form=form)
+
+
+# @bp.route('/forgot')
+# def forgot():
+#     form = ForgotForm(request.form)
+#     return render_template('forms/forgot.html', form=form)
+
 
 @bp.route('/static/css/<path:filename>')
 def static_files_css(filename):
@@ -61,31 +76,5 @@ def static_files_icos(filename):
 def static_files_js(filename):
     return send_from_directory('../static/js/', filename=filename)
 
-# @bp.route('/register')
-# def register():
-#     form = RegisterForm(request.form)
-#     return render_template('forms/register.html', form=form)
-
-
-# @bp.route('/forgot')
-# def forgot():
-#     form = ForgotForm(request.form)
-#     return render_template('forms/forgot.html', form=form)
-
-# @bp.route('/static/css/<path:filename>')
-# def static_files_css(filename):
-#     return send_from_directory(app.static_folder, filename=filename)
-
 
 # Error handlers.
-
-
-@bp.errorhandler(werkzeug.exceptions.InternalServerError)
-def internal_error(error):
-    #db_session.rollback()
-    return render_template('errors/500.html'), 500
-
-
-@bp.errorhandler(werkzeug.exceptions.NotFound)
-def not_found_error(error):
-    return render_template('errors/404.html'), 404

@@ -9,7 +9,7 @@ main app instance is here and also the views for the endpoints, default port is 
 #----------------------------------------------------------------------------#
 
 
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, render_template, request, send_from_directory, session
 # from flask.ext.sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
@@ -133,35 +133,16 @@ def login_required(test):
 
 
 
-# @app.errorhandler(werkzeug.exceptions.InternalServerError)
-# def internal_error(error):
-#     #db_session.rollback()
-#     return render_template('errors/500.html'), 500
-
-
-# @app.errorhandler(werkzeug.exceptions.NotFound)
-# def not_found_error(error):
-#     return render_template('errors/404.html'), 404
-
-# if not app.debug:
-#     file_handler = FileHandler('error.log')
-#     file_handler.setFormatter(
-#         Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]')
-#     )
-#     app.logger.setLevel(logging.INFO)
-#     file_handler.setLevel(logging.INFO)
-#     app.logger.addHandler(file_handler)
-#     app.logger.info('errors')
 
 @app.errorhandler(werkzeug.exceptions.InternalServerError)
 def internal_error(error):
     #db_session.rollback()
-    return render_template('errors/500.html'), 500
+    return render_template('errors/500.html', previous=session["previous"]), 500
 
 
 @app.errorhandler(werkzeug.exceptions.NotFound)
 def not_found_error(error):
-    return render_template('errors/404.html'), 404
+    return render_template('errors/404.html', previous=session["previous"]), 404
 
 if not app.debug:
     file_handler = FileHandler('error.log')
