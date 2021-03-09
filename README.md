@@ -1,20 +1,13 @@
 # Gmail-Client-App
 
-clone 
+<br>
 
-```bash
-git clone https://github.com/TSA-Software-Dev-2020/Gmail-Client-App.git
-```
+## New Additions:
+---
+* Gmail user consent screen (not functional unless given a client secret file with valid fields)
+* Fixed routing issue
+* Fixed static folder issue
 
-commit to new-commits
-
-```bash
-git init
-&& git add .
-&& git commit -m "random stuff"
-&& git add remote origin https://github.com/TSA-Software-Dev-2020/Gmail-Client-Application.git
-&& git checkout dev
-&& git push -u origin dev
-```
-
-and then pr merge to main
+## Make changes
+---
+ Do `git fetch` before doing `git push` to avoid conflicts
