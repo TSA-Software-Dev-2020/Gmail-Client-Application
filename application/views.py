@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, render_template, request, send_from_directory
+from flask import Flask, Blueprint, render_template, request, send_from_directory, redirect
 # from flask.ext.sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
@@ -41,7 +41,7 @@ def about():
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        print(request.form)
+        return redirect(gmail_api.Auth().authorization_url)
     form = LoginForm(request.form)
     return render_template('forms/login.html', form=form)
 
