@@ -24,6 +24,7 @@ import logging
 from logging import Formatter, FileHandler
 from .forms import *
 import os
+from pathlib import Path
 import werkzeug
 import jinja2
 
@@ -32,7 +33,7 @@ import jinja2
 # App Config
 #----------------------------------------------------------------------------#
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="/static", static_folder=str(Path(__file__).parent.parent)+"/static")
 app.config.from_object('application.config_dev')
 #db = SQLAlchemy(app)
 
@@ -41,6 +42,8 @@ temp_loader = jinja2.ChoiceLoader([
         jinja2.FileSystemLoader(['templates']),
     ])
 app.jinja_loader = temp_loader
+
+
 
 # Automatically tear down SQLAlchemy.
 '''
@@ -93,7 +96,7 @@ def login_required(test):
 
 # @app.route('/static/css/<path:filename>')
 # def static_files_css(filename):
-#     return send_from_directory(app.static_folder, filename=filename)
+#     return send_from_directory(str(ROOT_DIR+".static"), filename=filename)
 
 
 @app.route('/')
