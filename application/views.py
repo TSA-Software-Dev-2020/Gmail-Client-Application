@@ -47,18 +47,18 @@ def login():
         return redirect(gmail_api.Auth().authorization_url)
     form = LoginForm(request.form)
     return render_template('forms/login.html', form=form)
+''''
+@bp.route('/register')
+def register():
+    form = RegisterForm(request.form)
+    return render_template('forms/register.html', form=form)
 
-# @bp.route('/register')
-# def register():
-#     form = RegisterForm(request.form)
-#     return render_template('forms/register.html', form=form)
 
-
-# @bp.route('/forgot')
-# def forgot():
-#     form = ForgotForm(request.form)
-#     return render_template('forms/forgot.html', form=form)
-
+@bp.route('/forgot')
+def forgot():
+    form = ForgotForm(request.form)
+    return render_template('forms/forgot.html', form=form)
+'''
 
 @bp.route('/static/css/<path:filename>')
 def static_files_css(filename):

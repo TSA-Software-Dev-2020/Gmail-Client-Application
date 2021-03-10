@@ -28,6 +28,7 @@ from pathlib import Path
 import werkzeug
 import jinja2
 from .views import bp
+from .oauthview import oauth_bp
 
 
 #----------------------------------------------------------------------------#
@@ -36,6 +37,7 @@ from .views import bp
 
 app = Flask(__name__, static_url_path="/static", static_folder=str(Path(__file__).parent.parent)+"/static")
 app.register_blueprint(bp)
+app.register_blueprint(oauth_bp)
 app.config.from_object('application.config_dev')
 #db = SQLAlchemy(app)
 
