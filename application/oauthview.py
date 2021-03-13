@@ -7,7 +7,7 @@ import os
 import werkzeug
 import jinja2
 import os
-from .utils import gmail_api
+from .utils.gmail_api import Auth
 
 
 oauth_bp = Blueprint("oauth_bp", __name__)
