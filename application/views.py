@@ -51,7 +51,7 @@ def about():
 def login():
     session["previous"] = "/login"
     if request.method == 'POST':
-        return redirect(gmail_api.Auth().authorization_url)
+        return redirect(gmail_api.Gmail().authorization_url)
     form = LoginForm(request.form)
     return render_template('forms/login.html', form=form)
 ''''
@@ -59,8 +59,6 @@ def login():
 def register():
     form = RegisterForm(request.form)
     return render_template('forms/register.html', form=form)
-
-
 @bp.route('/forgot')
 def forgot():
     form = ForgotForm(request.form)

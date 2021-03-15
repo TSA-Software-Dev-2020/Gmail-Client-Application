@@ -7,11 +7,25 @@ import os
 import werkzeug
 import jinja2
 import os
-from .utils.gmail_api import Auth
+from .utils.gmail_api import Gmail
 
 
 oauth_bp = Blueprint("oauth_bp", __name__)
 
+gmail = Gmail()
+
 @oauth_bp.route('/oauth2callback')
 def oauth2callback():
-    return request.args.get('code')
+    authorization_response = request.url
+    gmail.flow.fetch_token(authorization_response=authorization_response)
+    credentials = gmail.flow.credentials
+    flask.session['credentials'] = {
+        'token': credentials.token,
+        'refresh_token': credentials.refresh_token,
+        'token_uri': credentials.token_uri,
+        'client_id': credentials.client_id,
+        'client_secret': credentials.client_secret,
+        'scopes': credentials.scopes
+        }
+    stuff = gmail.get_stuff()
+    return str(stuff)
