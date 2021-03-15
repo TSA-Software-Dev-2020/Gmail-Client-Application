@@ -12,14 +12,14 @@ from .utils.gmail_api import Gmail
 
 oauth_bp = Blueprint("oauth_bp", __name__)
 
-gmail = Gmail()
-
 @oauth_bp.route('/oauth2callback')
 def oauth2callback():
+    state = session['state']
+    gmail = Gmail(state=state)
     authorization_response = request.url
     gmail.flow.fetch_token(authorization_response=authorization_response)
     credentials = gmail.flow.credentials
-    flask.session['credentials'] = {
+    session['credentials'] = {
         'token': credentials.token,
         'refresh_token': credentials.refresh_token,
         'token_uri': credentials.token_uri,

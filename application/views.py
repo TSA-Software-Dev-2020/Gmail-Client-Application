@@ -34,8 +34,6 @@ def login_required(test):
     return wrap
 '''
 
-
-
 @bp.route('/')
 def home():
     session["previous"] = "/"
@@ -51,7 +49,10 @@ def about():
 def login():
     session["previous"] = "/login"
     if request.method == 'POST':
-        return redirect(gmail_api.Gmail().authorization_url)
+        gmail = gmail_api.Gmail()
+        session['state'] = gmail.state
+        print(session['state'])
+        return redirect(gmail.authorization_url)
     form = LoginForm(request.form)
     return render_template('forms/login.html', form=form)
 ''''
