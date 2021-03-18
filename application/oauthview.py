@@ -28,5 +28,6 @@ def oauth2callback():
         'client_secret': credentials.client_secret,
         'scopes': credentials.scopes
         }
+    # You can also specify message_index= to get a singular message.
     stuff = gmail.get_messages(labels=[label.INBOX])
-    return str(stuff.plain)
+    return str(stuff)

@@ -44,7 +44,7 @@ class Gmail:
         query: str = '',
         attachments: Union['ignore', 'reference', 'download'] = 'reference',
         include_spam_trash: bool = False,
-        message_index:int = 0
+        message_index:int = None
         ):
         
         credentials = google.oauth2.credentials.Credentials(
@@ -64,6 +64,10 @@ class Gmail:
             if 'messages' in res:
                 message_refs.extend(res['messages'])
 
+            if message_index is None:
+                return [self._build_message_from_ref(user_id, ref, attachments) 
+                    for ref in message_refs]
+                    
             return self._build_message_from_ref(user_id='me', message_ref=message_refs[message_index])
 
     def list_labels(self, user_id: str = 'me') -> List[Label]:
