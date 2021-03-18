@@ -227,5 +227,5 @@ class Gmail:
                     ret.extend(self._evaluate_message_payload(part, user_id, msg_id,
                                                               attachments))
             return ret
-
+            
         return []
