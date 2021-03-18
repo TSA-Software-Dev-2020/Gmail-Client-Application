@@ -4,6 +4,8 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 # from oauth2client.clientsecrets import InvalidClientSecretsError
 import google_auth_oauthlib.flow
+from bs4 import BeautifulSoup
+import lxml
 from typing import List, Optional, Union
 import os
 import base64
@@ -132,12 +134,98 @@ class Gmail:
                     recipient = hdr['value']
                 elif hdr['name'] == 'Subject':
                     subject = hdr['value']
-
+            
+            parts = self._evaluate_message_payload(
+                payload, user_id, message_ref['id'], attachments
+            )
 
             plain_msg = None
+            html_msg = None
+            attms = []
+            for part in parts:
+                if part['part_type'] == 'plain':
+                    if plain_msg is None:
+                        plain_msg = part['body']
+                    else:
+                        plain_msg += '\n' + part['body']
+                elif part['part_type'] == 'html':
+                    if html_msg is None:
+                        html_msg = part['body']
+                    else:
+                        html_msg += '<br/>' + part['body']
+                elif part['part_type'] == 'attachment':
+                    attm = Attachment(self.service, user_id, msg_id,
+                                      part['attachment_id'], part['filename'],
+                                      part['filetype'], part['data'])
+                    attms.append(attm)
+
             credentials = google.oauth2.credentials.Credentials(
                 **session['credentials'])
             with build(self.API_SERVICE, self.API_VERSION, credentials=credentials) as service:
                 return Message(service, user_id, msg_id, thread_id, recipient, 
-                    sender, subject, date, None, plain_msg, None, label_ids,
-                    None)
+                    sender, subject, date, None, plain_msg, html_msg, label_ids,
+                    attms)
+
+
+    def _evaluate_message_payload(
+        self,
+        payload: dict,
+        user_id: str,
+        msg_id: str,
+        attachments: Union['ignore', 'reference', 'download'] = 'reference'
+    ) ->List[dict]:
+
+        if 'attachmentId' in payload['body']:  # if it's an attachment
+            if attachments == 'ignore':
+                return []
+
+            att_id = payload['body']['attachmentId']
+            filename = payload['filename']
+            if not filename:
+                filename = 'unknown'
+
+            obj = {
+                'part_type': 'attachment',
+                'filetype': payload['mimeType'],
+                'filename': filename,
+                'attachment_id': att_id,
+                'data': None
+            }
+
+            if attachments == 'reference':
+                return [obj]
+            
+            else:  # attachments == 'download'
+                if 'data' in payload['body']:
+                    data = payload['body']['data']
+                else:
+                    res = self.service.users().messages().attachments().get(
+                        userId=user_id, messageId=msg_id, id=att_id
+                    ).execute()
+                    data = res['data']
+
+                file_data = base64.urlsafe_b64decode(data)
+                obj['data'] = file_data
+                return [obj]
+        
+        elif payload['mimeType'] == 'text/html':
+            data = payload['body']['data']
+            data = base64.urlsafe_b64decode(data)
+            body = BeautifulSoup(data, 'lxml', from_encoding='utf-8').body
+            return [{ 'part_type': 'html', 'body': str(body) }]
+
+        elif payload['mimeType'] == 'text/plain':
+            data = payload['body']['data']
+            data = base64.urlsafe_b64decode(data)
+            body = data.decode('UTF-8')
+            return [{ 'part_type': 'plain', 'body': body }]
+
+        elif payload['mimeType'].startswith('multipart'):
+            ret = []
+            if 'parts' in payload:
+                for part in payload['parts']:
+                    ret.extend(self._evaluate_message_payload(part, user_id, msg_id,
+                                                              attachments))
+            return ret
+
+        return []

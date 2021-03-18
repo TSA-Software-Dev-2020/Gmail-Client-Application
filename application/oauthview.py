@@ -29,4 +29,4 @@ def oauth2callback():
         'scopes': credentials.scopes
         }
     stuff = gmail.get_messages(labels=[label.INBOX])
-    return str(stuff)
+    return str(stuff.plain)
