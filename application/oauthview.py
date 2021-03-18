@@ -8,7 +8,8 @@ import werkzeug
 import jinja2
 import os
 from .utils.gmail_api import Gmail
-
+from .utils import label
+from .utils.label import Label
 
 oauth_bp = Blueprint("oauth_bp", __name__)
 
@@ -27,5 +28,5 @@ def oauth2callback():
         'client_secret': credentials.client_secret,
         'scopes': credentials.scopes
         }
-    stuff = gmail.get_stuff()
+    stuff = gmail.get_messages(labels=[label.INBOX])
     return str(stuff)

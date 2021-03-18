@@ -17,20 +17,20 @@ class Label:
         name (str): The name of the Label.
         id (str): The ID of the label.
     """
-
+    
     def __init__(self, name: str, id: str) -> None:
         self.name = name
         self.id = id
-
+    
     def __repr__(self) -> str:
         return f'Label(name={self.name!r}, id={self.id!r})'
-
+    
     def __str__(self) -> str:
         return self.name
-
+    
     def __hash__(self) -> int:
         return hash(self.id)
-
+    
     def __eq__(self, other) -> bool:
         if isinstance(other, str):
             # Can be compared to a string of the label ID
