@@ -29,6 +29,7 @@ import werkzeug
 import jinja2
 from .views import bp
 from .oauthview import oauth_bp
+from .dashboard_view import db_bp
 
 
 
@@ -39,6 +40,7 @@ def create_app(config_filename='application.config_dev'):
     app = Flask(__name__, static_url_path="/static", static_folder=str(Path(__file__).parent.parent)+"/static")
     app.register_blueprint(bp)
     app.register_blueprint(oauth_bp)
+    app.register_blueprint(db_bp)
     app.config.from_object(config_filename)
     #db = SQLAlchemy(app)
     

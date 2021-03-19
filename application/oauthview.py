@@ -15,7 +15,7 @@ oauth_bp = Blueprint("oauth_bp", __name__)
 
 @oauth_bp.route('/oauth2callback')
 def oauth2callback():
-    state = session['state']
+    state = session["state"]
     gmail = Gmail(state=state)
     authorization_response = request.url
     gmail.flow.fetch_token(authorization_response=authorization_response)
@@ -27,7 +27,5 @@ def oauth2callback():
         'client_id': credentials.client_id,
         'client_secret': credentials.client_secret,
         'scopes': credentials.scopes
-        }
-    # You can also specify message_index= to get a singular message.
-    stuff = gmail.get_messages(labels=[label.INBOX])
-    return str(stuff)
+    }
+    return redirect("/dashboard?tab=inbox")

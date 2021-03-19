@@ -24,6 +24,7 @@ class Gmail:
     
     def __init__(
         self,
+        creds=None,
         state=None
     ):
         self.flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
@@ -36,6 +37,12 @@ class Gmail:
             access_type='offline',
             include_granted_scopes='true'
         )
+
+        if creds == None:
+            self.credentials = None
+        else:
+            self.credentials = google.oauth2.credentials.Credentials(
+                **creds)
     
     def get_messages(
         self,
@@ -46,37 +53,50 @@ class Gmail:
         include_spam_trash: bool = False,
         message_index:int = None
         ):
-        
-        credentials = google.oauth2.credentials.Credentials(
-            **session['credentials'])
-        with build(self.API_SERVICE, self.API_VERSION, credentials=credentials) as service:
-            if labels is None:
-                labels = []
-            labels_ids = [
-                lbl.id if isinstance(lbl, Label) else lbl for lbl in labels
-            ]
-            res = service.users().messages().list(
-                userId=user_id,
-                q=query,
-                labelIds=labels_ids
-            ).execute()
-            message_refs = []
-            if 'messages' in res:
-                message_refs.extend(res['messages'])
+
+        if labels == None:
+            labels = []
+        labels_ids = [
+            lbl.id if isinstance(lbl, Label) else lbl for lbl in labels
+        ]
+
+        try:
+            with build(self.API_SERVICE, self.API_VERSION, credentials=self.credentials) as service:
+
+                res = service.users().messages().list(
+                    userId=user_id,
+                    q=query,
+                    labelIds=labels_ids
+                ).execute()
+                
+                message_refs = []
+                
+                if 'messages' in res:
+                    message_refs.extend(res['messages'])
+                
+                while 'nextPageToken' in res:
+                    page_token = res['nextPageToken']
+                    res = service.users().messages().list(
+                        userId=user_id,
+                        q=query,
+                        labelIds=labels_ids,
+                        pageToken=page_token
+                    ).execute()
+                    message_refs.extend(res['messages'])
 
             if message_index is None:
                 return [self._build_message_from_ref(user_id, ref, attachments) 
                     for ref in message_refs]
-                    
+            
             return self._build_message_from_ref(user_id='me', message_ref=message_refs[message_index])
+        except HttpError as error:
+            raise error
 
     def list_labels(self, user_id: str = 'me') -> List[Label]:
 
         
         try:
-            credentials = google.oauth2.credentials.Credentials(
-                **session['credentials'])
-            with build(self.API_SERVICE, self.API_VERSION, credentials=credentials) as service:
+            with build(self.API_SERVICE, self.API_VERSION, credentials=self.credentials) as service:
                 res = service.users().labels().list(
                     userId=user_id
                 ).execute()
@@ -98,9 +118,7 @@ class Gmail:
 
         try:
             # Get message JSON
-            credentials = google.oauth2.credentials.Credentials(
-                **session['credentials'])
-            with build(self.API_SERVICE, self.API_VERSION, credentials=credentials) as service:
+            with build(self.API_SERVICE, self.API_VERSION, credentials=self.credentials) as service:
                 message = service.users().messages().get(
                     userId=user_id, id=message_ref['id']
                 ).execute()
@@ -162,10 +180,8 @@ class Gmail:
                                       part['attachment_id'], part['filename'],
                                       part['filetype'], part['data'])
                     attms.append(attm)
-
-            credentials = google.oauth2.credentials.Credentials(
-                **session['credentials'])
-            with build(self.API_SERVICE, self.API_VERSION, credentials=credentials) as service:
+           
+            with build(self.API_SERVICE, self.API_VERSION, credentials=self.credentials) as service:
                 return Message(service, user_id, msg_id, thread_id, recipient, 
                     sender, subject, date, None, plain_msg, html_msg, label_ids,
                     attms)
