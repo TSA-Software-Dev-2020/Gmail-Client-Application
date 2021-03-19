@@ -10,6 +10,7 @@ from typing import List, Optional, Union
 import os
 import base64
 from .label import Label
+from ..utils import label
 from .message import Message
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -43,7 +44,52 @@ class Gmail:
         else:
             self.credentials = google.oauth2.credentials.Credentials(
                 **creds)
-    
+
+    def get_inbox(
+        self,
+        user_id: str = 'me',
+        labels: Optional[List[Label]] = None,
+        query: str = '',
+        attachments: Union['ignore', 'reference', 'download'] = 'reference'
+    ) -> List[Message]:
+
+        if labels is None:
+            labels = []
+
+        labels.append(label.INBOX)
+        return self.get_unread_messages(user_id, labels, query)
+
+    def get_unread_inbox(
+        self,
+        user_id: str = 'me',
+        labels: Optional[List[Label]] = None,
+        query: str = '',
+        attachments: Union['ignore', 'reference', 'download'] = 'reference'
+    ) -> List[Message]:
+
+        if labels is None:
+            labels = []
+
+        labels.append(label.INBOX)
+        return self.get_unread_messages(user_id, labels, query)
+
+    def get_unread_messages(
+        self,
+        user_id: str = 'me',
+        labels: Optional[List[Label]] = None,
+        query: str = '',
+        attachments: Union['ignore', 'reference', 'download'] = 'reference',
+        include_spam_trash: bool = False
+    ) -> List[Message]:
+        
+        if labels is None:
+            labels = []
+
+        labels.append(label.UNREAD)
+        return self.get_messages(user_id, labels, query, attachments,
+                                 include_spam_trash)
+
+
     def get_messages(
         self,
         user_id: str = 'me',

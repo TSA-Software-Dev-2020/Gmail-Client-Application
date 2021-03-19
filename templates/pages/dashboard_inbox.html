@@ -1,0 +1,23 @@
+{% extends 'layouts/main_dashboard.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Inbox</h1>
+</div>
+<div class="lead">
+    {% for msg in inbox %}
+    {% if msg in unread_inbox %}
+    <div class="well well-sm">
+        <p>{{ msg.date }}</p>
+        <p>{{ msg.subject }}</p>
+        <p>New</p>>
+    </div>
+    {% else %}
+    <div class="well well-sm">
+        <p>{{ msg.date }}</p>
+        <p>{{ msg.subject }}</p>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}
