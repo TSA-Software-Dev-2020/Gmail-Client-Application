@@ -1,0 +1,20 @@
+{% extends 'layouts/main.dashboard.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Sent Items</h1>
+</div>
+<div class="lead">
+    {% if sents|length==0 %}
+    No messages to display here...
+    {% endif %}
+    {% for msg in sents %}
+    <div class="well well-sm">
+        <small class="text-muted">{{ msg.date }}</small>
+        <p class="h5"> - {{ msg.sender }}</p>
+        <br>
+        <p class="h3">{{ msg.subject }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

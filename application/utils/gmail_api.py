@@ -57,7 +57,7 @@ class Gmail:
             labels = []
 
         labels.append(label.INBOX)
-        return self.get_unread_messages(user_id, labels, query)
+        return self.get_messages(user_id, labels, query)
 
     def get_unread_inbox(
         self,
@@ -88,6 +88,37 @@ class Gmail:
         labels.append(label.UNREAD)
         return self.get_messages(user_id, labels, query, attachments,
                                  include_spam_trash)
+
+
+    def get_sents(
+        self,
+        user_id: str = 'me',
+        labels: Optional[List[Label]] = None,
+        query: str = '',
+        attachments: Union['ignore', 'reference', 'download'] = 'reference',
+        include_spam_trash: bool = False
+    ) -> List[Message]:
+
+        if labels is None:
+            labels = []
+
+        labels.append(label.SENT)
+        return self.get_messages(user_id, labels, query, attachments,
+                                 include_spam_trash)
+
+    def get_drafts(
+        self,
+        user_id: str = 'me',
+        labels: Optional[List[Label]] = None,
+        query: str = '',
+        attachments: Union['ignore', 'reference', 'download'] = 'reference'
+    ) -> List[Message]:
+
+        if labels is None:
+            labels = []
+
+        labels.append(label.DRAFT)
+        return self.get_messages(user_id, labels, query)
 
 
     def get_messages(
@@ -134,7 +165,8 @@ class Gmail:
                 return [self._build_message_from_ref(user_id, ref, attachments) 
                     for ref in message_refs]
             
-            return self._build_message_from_ref(user_id='me', message_ref=message_refs[message_index])
+            return self._get_messages_from_refs(user_id, message_refs,
+                                                attachments)
         except HttpError as error:
             raise error
 
@@ -154,6 +186,56 @@ class Gmail:
         else:
             labels = [Label(name=x['name'], id=x['id']) for x in res['labels']]
             return labels
+
+
+    def _get_messages_from_refs(
+        self,
+        user_id: str,
+        message_refs: List[dict],
+        attachments: Union['ignore', 'reference', 'download'] = 'reference',
+        parallel: bool = True
+    ) -> List[Message]:
+        
+        if not message_refs:
+            return []
+
+        if not parallel:
+            return [self._build_message_from_ref(user_id, ref, attachments)
+                    for ref in message_refs]
+
+        max_num_threads = 12  # empirically chosen, prevents throttling
+        target_msgs_per_thread = 10  # empirically chosen
+        num_threads = min(
+            math.ceil(len(message_refs) / target_msgs_per_thread),
+            max_num_threads
+        )
+        batch_size = math.ceil(len(message_refs) / num_threads)
+        message_lists = [None] * num_threads
+
+        def thread_download_batch(thread_num):
+            gmail = Gmail(_creds=self.creds)
+
+            start = thread_num * batch_size
+            end = min(len(message_refs), (thread_num + 1) * batch_size)
+            message_lists[thread_num] = [
+                gmail._build_message_from_ref(
+                    user_id, message_refs[i], attachments
+                )
+                for i in range(start, end)
+            ]
+
+        threads = [
+            threading.Thread(target=thread_download_batch, args=(i,))
+            for i in range(num_threads)
+        ]
+
+        for t in threads:
+            t.start()
+
+        for t in threads:
+            t.join()
+
+        return sum(message_lists, [])
 
     def _build_message_from_ref(
         self,

@@ -55,11 +55,11 @@
             <li {% if request.endpoint == 'home' %} class="active" {% endif %}><a href="{{ url_for('bp.home') }}">Home</a></li>
             <li {% if request.endpoint == 'about' %} class="active" {% endif %}><a href="{{ url_for('bp.about') }}">About</a></li>
             <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+              <a class="dropdown-toggle" data-toggle="dropdown">Tabs & Actions <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a>Action</a></li>
-                <li><a>Another action</a></li>
-                <li><a>Something else here</a></li>
+                <li><a href="{{ url_for('db_bp.dashboard') }}?tab=inbox">Inbox</a></li>
+                <li><a href="{{ url_for('db_bp.dashboard') }}?tab=sents">Sent Items</a></li>
+                <li><a href="{{ url_for('db_bp.dashboard') }}?tab=drafts">Drafts</a></li>
                 <li class="divider"></li>
                 <li class="dropdown-header">Nav header</li>
                 <li><a>Separated link</a></li>
