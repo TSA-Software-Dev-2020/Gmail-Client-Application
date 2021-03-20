@@ -7,6 +7,8 @@ import google_auth_oauthlib.flow
 from bs4 import BeautifulSoup
 import lxml
 from typing import List, Optional, Union
+import math
+import threading
 import os
 import base64
 from .label import Label
@@ -39,7 +41,7 @@ class Gmail:
             access_type='offline',
             include_granted_scopes='true'
         )
-
+        self.creds = creds
         if creds == None:
             self.credentials = None
         else:
@@ -171,10 +173,6 @@ class Gmail:
                     ).execute()
                     message_refs.extend(res['messages'])
 
-            if message_index is None:
-                return [self._build_message_from_ref(user_id, ref, attachments) 
-                    for ref in message_refs]
-            
             return self._get_messages_from_refs(user_id, message_refs,
                                                 attachments)
         except HttpError as error:
@@ -212,7 +210,7 @@ class Gmail:
         if not parallel:
             return [self._build_message_from_ref(user_id, ref, attachments)
                     for ref in message_refs]
-
+             
         max_num_threads = 12  # empirically chosen, prevents throttling
         target_msgs_per_thread = 10  # empirically chosen
         num_threads = min(
@@ -221,10 +219,9 @@ class Gmail:
         )
         batch_size = math.ceil(len(message_refs) / num_threads)
         message_lists = [None] * num_threads
-
+        
         def thread_download_batch(thread_num):
-            gmail = Gmail(_creds=self.creds)
-
+            gmail = Gmail(creds=self.creds)
             start = thread_num * batch_size
             end = min(len(message_refs), (thread_num + 1) * batch_size)
             message_lists[thread_num] = [
@@ -233,18 +230,17 @@ class Gmail:
                 )
                 for i in range(start, end)
             ]
-
+          
         threads = [
             threading.Thread(target=thread_download_batch, args=(i,))
             for i in range(num_threads)
         ]
-
+        
         for t in threads:
             t.start()
 
         for t in threads:
             t.join()
-
         return sum(message_lists, [])
 
     def _build_message_from_ref(

@@ -14,7 +14,7 @@
         <small class="text-muted">{{ msg.date }}</small>
         <p class="h5"> - {{ msg.sender }}</p>
         <br>
-        <p class="h3">{{ msg.subject }}</p>
+        <p class="h3"><a href="/dashboard?tab=drafts&msg_index={{ loop.index0 }}">{{ msg.subject }}</a></p>
     </div>
     {% endfor %}
 </div>
