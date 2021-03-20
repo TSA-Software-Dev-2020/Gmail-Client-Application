@@ -26,7 +26,8 @@ class Gmail:
     def __init__(
         self,
         creds=None,
-        state=None
+        state=None,
+        user_id='me'
     ):
         self.flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
             os.path.join(os.path.dirname(__file__), 'client_secret.json'),
@@ -44,6 +45,15 @@ class Gmail:
         else:
             self.credentials = google.oauth2.credentials.Credentials(
                 **creds)
+
+        self.user_metadata = None
+
+        if creds != None:
+            with build(self.API_SERVICE, self.API_VERSION, credentials=self.credentials) as service:     
+                self.user_metadata = service.users().getProfile(
+                    userId=user_id
+                ).execute()
+    
 
     def get_inbox(
         self,

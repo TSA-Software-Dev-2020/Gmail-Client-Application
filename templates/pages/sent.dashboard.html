@@ -2,7 +2,7 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 <div class="page-header">
-    <h1>Sent Items</h1>
+    <h1>Sent Items <code>for {{ user_metadata['emailAddress'] }}</code></h1>
 </div>
 <div class="lead">
     {% if sents|length==0 %}
