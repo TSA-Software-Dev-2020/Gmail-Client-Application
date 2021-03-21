@@ -1,5 +1,6 @@
 from flask_wtf import Form
 from wtforms import TextField, PasswordField
+from wtforms.fields import StringField
 from wtforms.validators import DataRequired, EqualTo, Length
 
 # Set your classes here.
@@ -31,3 +32,8 @@ class ForgotForm(Form):
     email = TextField(
         'Email', validators=[DataRequired(), Length(min=6, max=40)]
     )
+
+class ComposeForm(Form):
+    recipient = TextField('Recipient', validators=[DataRequired(), Length(min=6, max=40)])
+    subject = TextField('Gmail Address', [DataRequired()])
+    body = StringField('Message Body', [DataRequired()])

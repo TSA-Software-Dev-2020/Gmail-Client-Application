@@ -5,6 +5,7 @@ from googleapiclient.errors import HttpError
 # from oauth2client.clientsecrets import InvalidClientSecretsError
 import google_auth_oauthlib.flow
 from bs4 import BeautifulSoup
+from email.mime.multipart import MIMEMultipart
 import lxml
 from typing import List, Optional, Union
 import math
@@ -56,6 +57,36 @@ class Gmail:
                     userId=user_id
                 ).execute()
     
+
+    def send_message(
+        self,
+        sender: str,
+        to: str,
+        subject: str = '',
+        msg_html: Optional[str] = None, 
+        msg_plain: Optional[str] = None,
+        cc: Optional[List[str]] = None,
+        bcc: Optional[List[str]] = None,
+        attachments: Optional[List[str]] = None,
+        signature: bool = False,
+        user_id: str = 'me'
+    ) -> Message:
+
+        msg = self._create_message(
+            sender, to, subject, msg_html, msg_plain, cc=cc, bcc=bcc,
+            attachments=attachments, signature=signature
+        )
+
+        try:
+            res = None
+            with build(self.API_SERVICE, self.API_VERSION, credentials=self.credentials) as service:
+                res = self.service.users().messages().send(userId='me', body=msg).execute()
+            return self._build_message_from_ref(user_id, res, 'reference')
+
+        except HttpError as error:
+            # Pass along the error
+            raise error
+
 
     def get_inbox(
         self,
@@ -383,3 +414,68 @@ class Gmail:
             return ret
             
         return []
+
+
+    def _create_message(
+        self,
+        sender: str,
+        to: str, 
+        subject: str = '',
+        msg_html: str = None,
+        msg_plain: str = None,
+        cc: List[str] = None,
+        bcc: List[str] = None,
+        attachments: List[str] = None,
+        signature: bool = False
+    ) -> dict:
+
+        msg = MIMEMultipart('mixed' if attachments else 'alternative')
+        msg['To'] = to
+        msg['From'] = sender
+        msg['Subject'] = subject
+
+        if cc:
+            msg['Cc'] = ', '.join(cc)
+
+        if bcc:
+            msg['Bcc'] = ', '.join(bcc)
+
+        if signature:
+            account_sig = self._get_alias_info(sender, 'me')['signature']
+            if msg_html is None:
+                msg_html = ''
+
+            msg_html += "<br /><br />" + account_sig
+
+        attach_plain = MIMEMultipart('alternative') if attachments else msg
+        attach_html = MIMEMultipart('related') if attachments else msg
+
+        if msg_plain:
+            attach_plain.attach(MIMEText(msg_plain, 'plain'))
+
+        if msg_html:
+            attach_html.attach(MIMEText(msg_html, 'html'))
+
+        if attachments:
+            attach_plain.attach(attach_html)
+            msg.attach(attach_plain)
+
+            self._ready_message_with_attachments(msg, attachments)
+
+        return {
+            'raw': base64.urlsafe_b64encode(msg.as_string().encode()).decode()
+        }
+
+
+    def _get_alias_info(
+        self,
+        send_as_email: str,
+        user_id: str = 'me'
+    ) -> dict:
+        
+        res = None
+        with build(self.API_SERVICE, self.API_VERSION, credentials=self.credentials) as service:
+            res =  self.service.users().settings().sendAs().get(
+                       sendAsEmail=send_as_email, userId=user_id).execute
+        
+        return res

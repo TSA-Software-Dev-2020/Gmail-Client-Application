@@ -9,28 +9,10 @@
     No messages to display here...
     {% endif %}
     {% for msg in inbox %}
-    {% if msg in unread_inbox %}
     <div class="well well-sm dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown">
            <small class="text-muted">{{ msg.date }}</small>
-           <p class="h5"> - {{ msg.sender }}</p>
-           <br>
-           <p class="h3">{{ msg.subject }}</p>
-           <p>New</p>>
-        </a>
-        <ul class="dropdown-menu">
-            <li>
-                <p class="h3">
-                    {{ msg.html | safe }}
-                </p>
-            </li>
-        </ul>
-    </div>
-    {% else %}
-    <div class="well well-sm dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown">
-           <small class="text-muted">{{ msg.date }}</small>
-           <p class="h5"> - {{ msg.sender }}</p>
+           <p class="h5"> from {{ msg.sender }}</p>
            <br>
            <p class="h3">{{ msg.subject }}</p>
         </a>
@@ -42,7 +24,32 @@
             </li>
         </ul>
     </div>
-    {% endif %}
     {% endfor %}
 </div>
+
+  <!-- Modal -->
+
+  <div class="modal fade" id="composeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form class="form" action="">
+                {{ form.recipient(class_ = 'form-control second-input', placeholder = form.recipient.label.text, required = true) }}
+                {{ form.subject(class_ = 'form-control first-input', placeholder = form.subject.label.text, required = true) }}
+                {{ form.body(class_ = 'form-control last-input bodyField', placeholder = form.body.label.text, required = true) }}
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

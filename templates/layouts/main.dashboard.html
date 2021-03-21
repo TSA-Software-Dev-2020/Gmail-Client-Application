@@ -17,6 +17,7 @@
 <link type="text/css" rel="stylesheet" href="/static/css/main.css" />
 <link type="text/css" rel="stylesheet" href="/static/css/main.responsive.css" />
 <link type="text/css" rel="stylesheet" href="/static/css/main.quickfix.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/custom.css" />
 <!-- /styles -->
 
 <!-- favicons -->
@@ -57,12 +58,13 @@
             <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown">Tabs & Actions <b class="caret"></b></a>
               <ul class="dropdown-menu">
+                <li class="dropdown-header">Tabs</li>
                 <li><a href="{{ url_for('db_bp.dashboard') }}?tab=inbox">Inbox</a></li>
                 <li><a href="{{ url_for('db_bp.dashboard') }}?tab=sents">Sent Items</a></li>
                 <li><a href="{{ url_for('db_bp.dashboard') }}?tab=drafts">Drafts</a></li>
                 <li class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a>Separated link</a></li>
+                <li class="dropdown-header">Actions</li>
+                <li><button type="button" class="btn" data-toggle="modal" data-target="#composeModal">Compose</button></li>
                 <li><a>One more separated link</a></li>
               </ul>
             </li>
