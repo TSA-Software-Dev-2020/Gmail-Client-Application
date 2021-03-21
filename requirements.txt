@@ -13,6 +13,7 @@ googleapiclient
 requests
 lxml
 bs4
+email
 # ecdsa
 # paramiko
 # pycrypto
