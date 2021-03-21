@@ -6,6 +6,7 @@ from googleapiclient.errors import HttpError
 import google_auth_oauthlib.flow
 from bs4 import BeautifulSoup
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 import lxml
 from typing import List, Optional, Union
 import math
@@ -80,7 +81,7 @@ class Gmail:
         try:
             res = None
             with build(self.API_SERVICE, self.API_VERSION, credentials=self.credentials) as service:
-                res = self.service.users().messages().send(userId='me', body=msg).execute()
+                res = service.users().messages().send(userId='me', body=msg).execute()
             return self._build_message_from_ref(user_id, res, 'reference')
 
         except HttpError as error:
@@ -340,11 +341,6 @@ class Gmail:
                         html_msg = part['body']
                     else:
                         html_msg += '<br/>' + part['body']
-                elif part['part_type'] == 'attachment':
-                    attm = Attachment(self.service, user_id, msg_id,
-                                      part['attachment_id'], part['filename'],
-                                      part['filetype'], part['data'])
-                    attms.append(attm)
            
             with build(self.API_SERVICE, self.API_VERSION, credentials=self.credentials) as service:
                 return Message(service, user_id, msg_id, thread_id, recipient, 

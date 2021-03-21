@@ -35,5 +35,5 @@ class ForgotForm(Form):
 
 class ComposeForm(Form):
     recipient = TextField('Recipient', validators=[DataRequired(), Length(min=6, max=40)])
-    subject = TextField('Gmail Address', [DataRequired()])
+    subject = TextField('Subject', [DataRequired()])
     body = StringField('Message Body', [DataRequired()])
