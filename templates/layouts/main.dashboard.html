@@ -21,12 +21,12 @@
 <!-- /styles -->
 
 <!-- favicons -->
-<link rel="shortcut icon" href="/static/ico/favicon.png">
+<link rel="shortcut icon" href="/static/ico/favicon.ico">
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/static/ico/apple-touch-icon-144-precomposed.png">
 <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/static/ico/apple-touch-icon-114-precomposed.png">
 <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/static/ico/apple-touch-icon-72-precomposed.png">
 <link rel="apple-touch-icon-precomposed" href="/static/ico/apple-touch-icon-57-precomposed.png">
-<link rel="shortcut icon" href="/static/ico/favicon.png">
+<!-- <link rel="shortcut icon" href="/static/ico/favicon.png"> -->
 <!-- /favicons -->
 
 <!-- scripts -->
@@ -65,12 +65,12 @@
                 <li class="divider"></li>
                 <li class="dropdown-header">Actions</li>
                 <li><button type="button" class="btn" data-toggle="modal" data-target="#composeModal">Compose</button></li>
-                <li><a>One more separated link</a></li>
+                <li><button type="button" class="btn" data-toggle="modal" data-target="#logoutModal">Logout</button></li>
               </ul>
             </li>
           </ul>
           <ul class="nav navbar-nav pull-right">
-            <li><a href="{{ url_for('db_bp.revoke') }}">Logout</a></li>
+            <li><button type="button" class="btn" data-toggle="modal" data-target="#logoutModal">Logout</button></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
