@@ -42,7 +42,12 @@ def home():
 @bp.route('/about')
 def about():
     session["previous"] = "/about"
-    return render_template('pages/placeholder.about.html')
+    return render_template('pages/project.html')
+
+@bp.route('/info')
+def info():
+    session["previous"] = "/info"
+    return render_template('pages/info.html')
 
 
 @bp.route('/login', methods=['GET', 'POST'])
