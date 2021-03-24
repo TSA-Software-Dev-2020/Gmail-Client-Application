@@ -8,23 +8,25 @@
     {% if inbox|length==0 %}
     No messages to display here...
     {% endif %}
+    <div id="accordion">
     {% for msg in inbox %}
-    <div class="well well-sm dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown">
-           <small class="text-muted">{{ msg.date }}</small>
-           <p class="h5"> from {{ msg.sender }}</p>
-           <br>
-           <p class="h3">{{ msg.subject }}</p>
-        </a>
-        <ul class="dropdown-menu">
-            <li>
-                <p class="h3">
-                    {{ msg.html | safe }}
-                </p>
-            </li>
-        </ul>
-    </div>
+      <div class="well well-sm card">
+        <div class="card-header" id="heading{{ loop.index0 }}">
+          <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{ loop.index0 }}" aria-expanded="true" aria-controls="collapse{{ loop.index0 }}">
+             <small class="text-muted">{{ msg.date }}</small>
+             <p class="h5"> from {{ msg.sender }}</p>
+             <br>
+             <p class="h3">{{ msg.subject }}</p>
+          </button>
+        </div>
+        <div id="collapse{{ loop.index0 }}" class="collapse" aria-labelledby="heading{{ loop.index0 }}" data-parent="#accordion">
+          <div class="card-body">
+            {{ msg.html | safe }}
+          </div>
+        </div>
+      </div>
     {% endfor %}
+    </div>
 </div>
 
   <!-- Modal -->
