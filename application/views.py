@@ -60,6 +60,13 @@ def login():
         return redirect(gmail.authorization_url)
     form = LoginForm(request.form)
     return render_template('forms/login.html', form=form)
+
+
+@bp.route('/attm_download')
+def attm_download():
+    return "<h2>Attachment preview isn't supported nor download so far</h2>"
+
+
 ''''
 @bp.route('/register')
 def register():

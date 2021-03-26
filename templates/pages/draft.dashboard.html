@@ -18,6 +18,11 @@
                <p class="h5"> to {{ msg.recipient }}</p>
                <br>
                <p class="h3">{{ msg.subject }}</p>
+               {% if msg.attachments %}
+               {% for attm in msg.attachments %}
+               <p><a href="{{ url_for('bp.attm_download') }}">{{ attm.filename }}</a></p>
+               {% endfor %}
+              {% endif %}
             </button>
           </div>
           <div id="collapse{{ loop.index0 }}" class="collapse" aria-labelledby="heading{{ loop.index0 }}" data-parent="#accordion">

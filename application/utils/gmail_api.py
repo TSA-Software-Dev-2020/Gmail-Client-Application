@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import lxml
+import html
 from typing import List, Optional, Union
 import math
 import threading
@@ -16,6 +17,7 @@ import base64
 from .label import Label
 from ..utils import label
 from .message import Message
+from .attachment import Attachment
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(os.path.dirname(__file__), 'service-account-creds.json')
@@ -301,6 +303,8 @@ class Gmail:
             if 'labelIds' in message:
                 user_labels = {x.id: x for x in self.list_labels(user_id=user_id)}
                 label_ids = [user_labels[x] for x in message['labelIds']]
+            snippet = html.unescape(message['snippet'])
+
 
             payload = message['payload']
             headers = payload['headers']
@@ -341,10 +345,16 @@ class Gmail:
                         html_msg = part['body']
                     else:
                         html_msg += '<br/>' + part['body']
+                elif part['part_type'] == 'attachment':
+                    with build(self.API_SERVICE, self.API_VERSION, credentials=self.credentials) as service:
+                        attm = Attachment(service, user_id, msg_id,
+                                          part['attachment_id'], part['filename'],
+                                          part['filetype'], part['data'])
+                    attms.append(attm)
            
             with build(self.API_SERVICE, self.API_VERSION, credentials=self.credentials) as service:
                 return Message(service, user_id, msg_id, thread_id, recipient, 
-                    sender, subject, date, None, plain_msg, html_msg, label_ids,
+                    sender, subject, date, snippet, plain_msg, html_msg, label_ids,
                     attms)
 
 
