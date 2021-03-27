@@ -59,13 +59,15 @@
               <a class="dropdown-toggle" data-toggle="dropdown">Tabs & Actions <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li class="dropdown-header">Tabs</li>
-                <li><a href="{{ url_for('db_bp.dashboard') }}?tab=inbox">Inbox</a></li>
-                <li><a href="{{ url_for('db_bp.dashboard') }}?tab=sents">Sent Items</a></li>
-                <li><a href="{{ url_for('db_bp.dashboard') }}?tab=drafts">Drafts</a></li>
+                <li><a href="{{ url_for('db_bp.dashboard') }}?tab=inbox">📪 Inbox</a></li>
+                <li><a href="{{ url_for('db_bp.dashboard') }}?tab=sents">📤 Sent Items</a></li>
+                <li><a href="{{ url_for('db_bp.dashboard') }}?tab=drafts">✉ Drafts</a></li>
+                <li><a href="{{ url_for('db_bp.dashboard') }}?tab=starred">⭐ Starred</a></li>
+                <li><a href="{{ url_for('db_bp.dashboard') }}?tab=trash">🗑️ Trash</a></li>
                 <li class="divider"></li>
                 <li class="dropdown-header">Actions</li>
-                <li><button type="button" class="btn" data-toggle="modal" data-target="#composeModal">Compose</button></li>
-                <li><button type="button" class="btn" data-toggle="modal" data-target="#logoutModal">Logout</button></li>
+                <li><button type="button" class="btn" data-toggle="modal" data-target="#composeModal">✍ Compose</button></li>
+                <li><button type="button" class="btn" data-toggle="modal" data-target="#logoutModal">🚪 Logout</button></li>
               </ul>
             </li>
           </ul>

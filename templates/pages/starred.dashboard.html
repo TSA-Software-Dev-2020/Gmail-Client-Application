@@ -1,0 +1,86 @@
+{% extends 'layouts/main.dashboard.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>⭐ Starred Messages <code>for {{ user_metadata['emailAddress'] }}</code></h1>
+</div>
+<div class="lead">
+  <div id="accordion">
+    {% if starred|length==0 %}
+    No messages to display here...
+    {% endif %}
+
+    {% for msg in starred %}
+      <div class="well well-sm card">
+        <div class="card-header" id="heading{{ loop.index0 }}">
+          <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{ loop.index0 }}" aria-expanded="true" aria-controls="collapse{{ loop.index0 }}">
+             <small class="text-muted">{{ msg.date }}</small>
+             <p class="h5"> from {{ msg.sender }}</p>
+             <br>
+             <p class="h3">{{ msg.subject }}</p>
+             {% if msg.attachments %}
+              {% for attm in msg.attachments %}
+              <p><a href="{{ url_for('bp.attm_download') }}">{{ attm.filename }}</a></p>
+              {% endfor %}
+             {% endif %}
+          </button>
+        </div>
+        <div id="collapse{{ loop.index0 }}" class="collapse" aria-labelledby="heading{{ loop.index0 }}" data-parent="#accordion">
+          <div class="card-body">
+            {{ msg.html | safe }}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    </div>
+</div>
+
+  <!-- Modal -->
+
+  <div class="modal fade" id="composeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form method="POST" class="form" action="{{ url_for('db_bp.message_submit') }}">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                    {{ compose_form.recipient(class_ = 'form-control second-input', placeholder = compose_form.recipient.label.text, required = true) }}
+                    {{ compose_form.subject(class_ = 'form-control first-input', placeholder = compose_form.subject.label.text, required = true) }}
+                    {{ compose_form.body(class_ = 'form-control last-input bodyField', placeholder = compose_form.body.label.text, required = true) }}
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Send</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Are you sure you want to logout?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button id="logoutModalButton" class="btn btn-primary">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    document.getElementById("logoutModalButton").onclick = function () {
+        location.href = "/revoke";
+    };
+ </script>
+{% endblock %}

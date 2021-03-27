@@ -167,6 +167,61 @@ class Gmail:
         return self.get_messages(user_id, labels, query)
 
 
+    def get_starred(
+        self,
+        user_id: str = 'me',
+        labels: Optional[List[Label]] = None,
+        query: str = '',
+        attachments: Union['ignore', 'reference', 'download'] = 'reference'
+    ) -> List[Message]:
+
+        if labels is None:
+            labels = []
+
+        labels.append(label.STARRED)
+        return self.get_messages(user_id, labels, query)
+
+
+    def get_trash(
+        self,
+        user_id: str = 'me',
+        labels: Optional[List[Label]] = None,
+        query: str = '',
+        attachments: Union['ignore', 'reference', 'download'] = 'reference'
+    ) -> List[Message]:
+
+        if labels is None:
+            labels = []
+
+        labels.append(label.TRASH)
+        return self.get_messages(user_id, labels, query)
+
+
+    def get_singular_message(
+        self,
+        msg_id:str,
+        user_id: str = 'me',
+        query: str = '',
+        attachments: Union['ignore', 'reference', 'download'] = 'reference',
+        include_spam_trash: bool = False,
+        message_index:int = None
+        ):
+
+        try:
+
+            item_0 = {
+                "id": msg_id
+            }
+
+            message_refs = []
+            message_refs.extend(item_0)
+
+            return self._get_messages_from_refs(user_id, message_refs,
+                                                attachments)
+        except HttpError as error:
+            raise error
+
+
     def get_messages(
         self,
         user_id: str = 'me',

@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms import TextField, PasswordField
+from wtforms import TextField, PasswordField, IntegerField, BooleanField
 from wtforms.fields import StringField
 from wtforms.validators import DataRequired, EqualTo, Length
 
@@ -24,8 +24,7 @@ class RegisterForm(Form):
 
 
 class LoginForm(Form):
-    name = TextField('Gmail Address', [DataRequired()])
-    password = PasswordField('Password', [DataRequired()])
+    agreed = BooleanField('Agree', [DataRequired()], default=False)
 
 
 class ForgotForm(Form):
@@ -37,3 +36,6 @@ class ComposeForm(Form):
     recipient = TextField('Recipient', validators=[DataRequired(), Length(min=6, max=40)])
     subject = TextField('Subject', [DataRequired()])
     body = StringField('Message Body', [DataRequired()])
+
+class TrashForm(Form):
+    id = IntegerField('Message Id', validators=[DataRequired()])

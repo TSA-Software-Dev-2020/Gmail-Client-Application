@@ -7,6 +7,7 @@ import os
 import werkzeug
 import jinja2
 import os
+from .utils.forms import LoginForm
 from .utils import gmail_api
 
 
@@ -52,14 +53,17 @@ def info():
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
+    login_form = LoginForm()
     session["previous"] = "/login"
-    if request.method == 'POST':
-        gmail = gmail_api.Gmail()
-        session['state'] = gmail.state
-        print(session['state'])
-        return redirect(gmail.authorization_url)
-    form = LoginForm(request.form)
-    return render_template('forms/login.html', form=form)
+    while(request.method == "POST"):
+        if login_form.is_submitted and login_form.agreed.data == True:
+            gmail = gmail_api.Gmail()
+            session['state'] = gmail.state
+            print(session['state'])
+            return redirect(gmail.authorization_url)
+        else:
+            return "You must agree to continue"
+    return render_template('forms/login.html', form=login_form)
 
 
 @bp.route('/attm_download')

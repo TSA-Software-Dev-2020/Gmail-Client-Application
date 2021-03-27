@@ -2,7 +2,7 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 <div class="page-header">
-    <h1>Drafts <code>for {{ user_metadata['emailAddress'] }}</code></h1>
+    <h1>✉ Drafts <code>for {{ user_metadata['emailAddress'] }}</code></h1>
 </div>
 <div class="lead">
     {% if drafts|length==0 %}
@@ -48,9 +48,9 @@
               </button>
             </div>
             <div class="modal-body">
-                    {{ form.recipient(class_ = 'form-control second-input', placeholder = form.recipient.label.text, required = true) }}
-                    {{ form.subject(class_ = 'form-control first-input', placeholder = form.subject.label.text, required = true) }}
-                    {{ form.body(class_ = 'form-control last-input bodyField', placeholder = form.body.label.text, required = true) }}
+                    {{ compose_form.recipient(class_ = 'form-control second-input', placeholder = compose_form.recipient.label.text, required = true) }}
+                    {{ compose_form.subject(class_ = 'form-control first-input', placeholder = compose_form.subject.label.text, required = true) }}
+                    {{ compose_form.body(class_ = 'form-control last-input bodyField', placeholder = compose_form.body.label.text, required = true) }}
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

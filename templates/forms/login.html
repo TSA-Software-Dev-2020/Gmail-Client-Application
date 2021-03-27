@@ -1,11 +1,14 @@
 {% extends 'layouts/form.html' %}
 {% block title %}Login{% endblock %}
 {% block content %}
+  <h2 class="page-header">
+    Login
+    <a href="{{ url_for('bp.home') }}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a>
+  </h2>
   <form method="post" class="form">
-    <h3 class="form-heading">Login <a href="{{ url_for('bp.home') }}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a></h3>
-    {{ form.name(class_ = 'form-control first-input', placeholder = form.name.label.text, required = true, autofocus = true) }}
-    {{ form.password(class_ = 'form-control last-input', placeholder = form.password.label.text, required = true) }}
+    <h3 class="form-heading">Gmail-Client is going to ask for permission to your gmail account, you must login first on the google consent screen</h3>
+    <p>Check the checkbox as "agreed"</p>
+    {{ form.agreed(class_ = 'form-control first-input last-input', placeholder = form.agreed.label.text, required = true, autofocus = true) }}
     <input type="submit" value="Submit" class="btn btn-primary btn-lg btn-block">
-    <p>You must add database as well as Flask-Login to enable user management. See the <a href="http://www.realpython.com">Real Python</a> course for more info!</p>
   </form>
 {% endblock %}
