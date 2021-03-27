@@ -2,12 +2,9 @@
 
 <br>
 
-## New Additions:
----
-* Gmail user consent screen (not functional unless given a client secret file with valid fields)
-* Fixed routing issue
-* Fixed static folder issue
+## Features:
 
-## Make changes
----
- Do `git fetch` before doing `git push` to avoid conflicts
+* Login with google
+* Documentation
+* Message body in dropdown menu
+* Emojis
